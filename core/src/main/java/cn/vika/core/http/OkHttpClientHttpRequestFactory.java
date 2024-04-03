@@ -78,7 +78,7 @@ public class OkHttpClientHttpRequestFactory implements ClientHttpRequestFactory 
      */
     public void setCallTimeout(int callTimeout){
         this.client = this.client.newBuilder()
-            .callTimeout(callTimeout, TimeUnit.MICROSECONDS)
+            .callTimeout(callTimeout, TimeUnit.MILLISECONDS)
             .build();
     }
 

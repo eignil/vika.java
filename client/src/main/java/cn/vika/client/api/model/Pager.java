@@ -60,6 +60,8 @@ public class Pager<T> implements Iterator<List<T>> {
 
     private ApiQueryParam queryParam;
 
+    private ApiQueryParam baseQueryParam;
+
     private AbstractApi api;
 
     private String url;
@@ -77,6 +79,7 @@ public class Pager<T> implements Iterator<List<T>> {
         }
 
         this.queryParam = new ApiQueryParam(1, itemsPerPage);
+        this.baseQueryParam = new ApiQueryParam().withParam(Constants.PAGE_SIZE, Integer.toString(itemsPerPage));
         Map<String, String> uriVariables = this.queryParam.toMap();
         GenericTypeReference<HttpResult<PagerInfo<T>>> reference = new GenericTypeReference<HttpResult<PagerInfo<T>>>() {};
         String uri = url + MapUtil.extractKeyToVariables(uriVariables);
@@ -99,6 +102,7 @@ public class Pager<T> implements Iterator<List<T>> {
         this.api = api;
         this.url = url;
         this.queryParam = queryParam;
+        this.baseQueryParam = (ApiQueryParam)this.queryParam.clone();
         javaType = JacksonConverter.getCollectionJavaType(type);
         GenericTypeReference<HttpResult<PagerInfo<T>>> reference = new GenericTypeReference<HttpResult<PagerInfo<T>>>() {};
         Map<String, String> uriVariables = this.queryParam.toMap();
@@ -173,7 +177,7 @@ public class Pager<T> implements Iterator<List<T>> {
         if (this.currentPage == pageNumber) {
             return this.currentItems;
         }
-
+        queryParam = (ApiQueryParam)baseQueryParam.clone();
         queryParam.withParam(Constants.PAGE_NUM, Integer.toString(pageNumber));
         Map<String, String> uriVariables = queryParam.toMap();
         GenericTypeReference<HttpResult<PagerInfo<T>>> reference = new GenericTypeReference<HttpResult<PagerInfo<T>>>() {};
